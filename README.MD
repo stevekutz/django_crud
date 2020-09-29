@@ -213,3 +213,62 @@
         Running migrations:
         Applying notes.0001_initial... OK
         ~~~
+
+#### Manually adding data via Python Shell
+
+1) Launch the `Python Shell`
+
+   - the prompt should turn into >>>
+   - load objects, imports, etc. into the shell before attempting to use
+
+    ~~~ bash
+    ./manage.py shell
+    ~~~
+
+3) Load the notes class and add an item 
+
+    ~~~ bash 
+    from notes.models import Note
+    n = Note(title = "first added", content = "random content added", kinds = 'random')
+    ~~~
+
+4) Test that the iem has proper syntax
+
+    ~~~ bash
+    n
+    ~~~
+
+    - should show:
+
+    ~~~ bash
+    <Note: first added>
+    ~~~
+
+5) Save the item to the database    
+
+    ~~~ bash
+    n.save()
+    ~~~
+
+    - the database should show the added item
+
+        <img src = "img_doc/item_added_with_python_shell.png">
+
+6) Run a `QuerySet` to see the added object
+
+
+    ~~~ bash
+    Note.objects.all()
+    ~~~
+
+    - should show:
+
+        ~~~ bash
+        <QuerySet [<Note: first added>]>
+        ~~~
+
+7) Exit `Python Shell`
+
+    ~~~ bash
+    exit()
+    ~~~
