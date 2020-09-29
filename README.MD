@@ -272,3 +272,44 @@
     ~~~ bash
     exit()
     ~~~
+
+#### Setting up the SECRET_KEY in .env
+
+1) Create a new key in the `Python Shell` by running the following all from one line
+
+    ~~~ bash
+    import random
+    ''.join([random.SystemRandom().choice('abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)') for i in range(50)])
+    ~~~
+
+2) Save this key in the `.env` file as (create this file if necessary)
+
+    ~~~ bash
+    SECRET_KEY = 'whatever_new_key_just_created'
+    DEBUG=True
+    ~~~
+
+3) While in the virtual environment, run 
+
+    ~~~ py
+    pipenv install python-decouple
+    ~~~
+
+4) Add the following to the top of the project's `settings.py` to import the config object
+
+    ~~~ bash
+    from decouple import config
+    ~~~
+
+    then change the line that held the original `SECRET_KEY` to:
+
+    ~~~ bash
+    SECRET_KEY = config('SECRET_KEY')
+    ~~~
+
+    and then change the original DEBUG
+
+    ~~~ bash
+    DEBUG = config('DEBUG', default=False, cast=bool)
+    ~~~
+
