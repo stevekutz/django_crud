@@ -123,3 +123,93 @@
     sessions
     [X] 0001_initial
     ~~~
+
+
+
+#### Project Models
+- Each model should map to a single table in the database
+- The attributes of the model relate to a database field 
+- Although `Django` adds an `id` field automatically as  `id = models.AutoField(primary_key=True)`. However, a custom id field can be defined
+- Every model MUST have one field that contains `primary_key = True`
+
+1) Add the following to the app's `models.py`
+
+    ~~~ py
+    from django.db import models
+    from django.utils import timezone     # required for adding timestamp info
+    from uuid import uuid4  # required for custom id using UUIDs
+
+    # Create your models here.
+    class Note(models.Model):
+
+        NOTES_KINDS = (
+            ('random', 'RANDOM'),
+            ('important', 'IMPORTANT'),
+            ('misc', 'MISC'),
+        )
+
+        id = models.UUIDField( primary_key = True, default = uuid4, editable = False)
+        title = models.CharField(max_length = 100)
+        content = models.TextField(blank = True) # allowed to be blank
+        time_stamp = models.DateTimeField(default = timezone.now)
+        kinds = models.CharField(max_length=50, choices = NOTES_KINDS, default = 'misc')
+
+        def __str__(self):
+            return self.title
+    ~~~
+
+2) Activate the app by adding it to the project's `settings.py` file
+
+    ~~~ py
+    INSTALLED_APPS = [
+        'notes.apps.NotesConfig',
+        'django.contrib.admin',
+    ~~~
+
+3) Verify the status of the migrations
+
+   - `showmigrations` just lists the status of proejct's migrations
+   - `makemigrations` prepares migrations from changes to the models
+   - `migrate` runs the actual migration
+
+
+    ~~~ bash
+    ./manage.py showmigrations
+    ~~~
+
+    - should show the following:~~~
+
+        ~~~ bash
+        notes
+        (no migrations)
+        ~~~
+
+    ~~~ bash
+    ./manage.py makemigrations
+    ~~~
+
+    - should show the following:
+
+        ~~~ bash
+        Migrations for 'notes':
+        notes/migrations/0001_initial.py
+        - Create model Note 
+        ~~~
+
+
+    ~~~ bash
+    ./manage.py migrate
+    ~~~
+
+    - should now show:
+
+        ~~~ bash
+        Migrations for 'notes':
+        notes/migrations/0001_initial.py
+            - Create model Note
+        (django_crud) bash-3.2$ ./manage.py migrate
+        Operations to perform:
+        Apply all migrations: admin, auth, contenttypes, notes, sessions
+        Running migrations:
+        Applying notes.0001_initial... OK
+        ~~~
